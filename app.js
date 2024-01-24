@@ -1,5 +1,5 @@
 // Load a .env file if one exists
-require('dotenv').config()
+// require('dotenv').config()
 
 const express = require("express");
 const handlebars = require("express-handlebars");
@@ -10,7 +10,7 @@ const port = process.env.EXPRESS_PORT || 3000;
 
 // Setup Handlebars
 app.engine("handlebars", handlebars.create({
-    defaultLayout: null
+    defaultLayout:"home"
 }).engine);
 app.set("view engine", "handlebars");
 
@@ -20,6 +20,14 @@ app.use(express.json({}));
 
 
 // TODO: Your app here
+app.get('/', (req, res) => {
+    res.render('home');
+});
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+
 
 
 app.listen(port, function () {
