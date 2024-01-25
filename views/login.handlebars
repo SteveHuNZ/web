@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,24 +39,29 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>login </h2>
+<div class="container">
 
-        {{#if error}}
-            <div class="error">{{error}}</div>
-        {{/if}}
 
-        <form action="/login" method="post">
-            <label for="username">username:</label>
-            <input type="text" id="username" name="username" required>
 
-            <label for="password">password:</label>
-            <input type="password" id="password" name="password" required>
 
-            <button type="submit">login </button>
-             <button type="submit">register </button>
 
-        </form>
-    </div>
+    <h2>login </h2>
+
+    {{#if error}}
+        <div class="error">{{error}}</div>
+    {{/if}}
+
+    <form action="/login" method="post">
+        <label for="username">username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">login</button>
+        <button type="submit">register222</button>
+
+    </form>
+</div>
 </body>
 </html>
