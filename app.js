@@ -10,9 +10,27 @@ const port = process.env.EXPRESS_PORT || 3000;
 
 // Setup Handlebars
 app.engine("handlebars", handlebars.create({
-    defaultLayout:"main_layout"
+    defaultLayout:"main"
 }).engine);
 app.set("view engine", "handlebars");
+
+
+// Setup body-parser
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Setup cookie-parser
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+// Setup express-session
+const session = require("express-session");
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: "CS719"
+}));
+
 
 // Set up to read POSTed form data
 app.use(express.urlencoded({ extended: true }));
@@ -23,17 +41,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // TODO: Your app here
-app.get('/', (req, res) => {
-    res.render('home', { home: true });
-});
+// app.get('/', (req, res) => {
+//     res.render('home', { home: true });
+// });
+//
+// app.get('/login', (req, res) => {
+//     res.render('login', { login: true });
+// });
+// app.get('/register', (req, res) => {
+//     res.render('register', { register: true });
+// });
 
-app.get('/login', (req, res) => {
-    res.render('login', { login: true });
-});
-app.get('/register', (req, res) => {
-    res.render('register', { register: true });
-});
+// Setup our routes
+const loginRouter = require("./routes/login-routes.js");
+app.use(loginRouter);
 
+const appRouter = require("./routes/application-routes.js");
+app.use(appRouter);
 
 
 
