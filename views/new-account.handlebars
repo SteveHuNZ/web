@@ -1,21 +1,121 @@
+<div class="container">
 
-<body>
-<div class="register-container">
-    <h2>Register</h2>
-    <form id="registerForm">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+    <script>
+        function checkUsernameAvailability() {
+            const username = document.querySelector('#txtUsername').value;
+
+
+            fetch(`/check-username?username=${encodeURIComponent(username)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const message = data.isAvailable ? 'Username is available' : 'Username is taken';
+                        if (username.length > 0) {
+                            document.getElementById('usernameAvailability').textContent = message;
+                            // document.getElementById("usernameAvailability").style.color = "red";
+                            if (!data.isAvailable) {
+                                document.getElementById("usernameAvailability").style.color = "red";
+                            } else {
+                                // 如果用户名可用，可以选择重置颜色
+                                document.getElementById("usernameAvailability").style.color = "initial";
+                            }
+                        }
+                        else {
+                            document.getElementById('usernameAvailability').textContent = "";
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+        }
+
+        // check password
+        function checkPasswordMatch() {
+            var password = document.querySelector('#txtPassword').value;
+            var confirmPassword = document.querySelector('#txtConfirmPassword').value;
+            var messageElement = document.querySelector('#message');
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+
+            }
+        }
+
+        // deal with the bug of set data of birthday
+        function setMaxDate() {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('birthday').setAttribute('max', today);
+        }
+
+        // deal with the manual input bug of set data of birthday
+        function validateBirthday() {
+            var inputDate = new Date(document.getElementById('birthday').value);
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);  // 重置时间部分以仅比较日期
+
+            if (inputDate > today) {
+                // 显示错误消息
+                document.getElementById('birthdayError').textContent = '生日不能是未来的日期';
+                // 可以选择清空无效的输入值
+                document.getElementById('birthday').value = '';
+            } else {
+                // 清除错误消息
+                document.getElementById('birthdayError').textContent = '';
+            }
+        }
+
+
+
+
+
+
+
+
+    </script>
+
+    <h1>New Account</h1>
+    <form action="./newAccount" method="POST">
+        <div class="flex-col mb">
+            <label for="txtUsername">Username:</label>
+            <input type="text" name="username" id="txtUsername" onkeyup="checkUsernameAvailability()" required>
+            <span id="usernameAvailability"></span>
         </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+
+        <div class="flex-col mb">
+            <label for="txtPassword">Password:</label>
+            <input type="password" name="password" id="txtPassword" required>
         </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+
+        <div class="flex-col mb">
+            <label for="txtConfirmPassword">Re-enter Password:</label>
+            <input type="password" name="confirmPassword" id="txtConfirmPassword" onblur="checkPasswordMatch()" required>
+            <div id="message"></div>
         </div>
-        <button type="submit">Register</button>
+
+
+        <div class="flex-col mb">
+            <label for="txtName">Name:</label>
+            <input type="text" name="name" id="txtName" required>
+        </div>
+
+        <div class="flex-col mb">
+            <label for="description">self-description:</label>
+            <textarea  id="description" name="description" required></textarea>
+
+        </div>
+
+        <div class="flex-col mb">
+            <label for="birthday">birthday:</label>
+            <input type="date" id="birthday" name="birthday"  onfocus="setMaxDate()" oninput="validateBirthday()" required>
+            <span id="birthdayError" style="color:red;"></span>
+
+        </div>
+
+        <br><br>
+
+
+
+
+        <div class="flex-row justify-sb align-center">
+            <button type="submit">Create account</button>
+        </div>
     </form>
+
 </div>
-</body>

@@ -41,16 +41,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // TODO: Your app here
-// app.get('/', (req, res) => {
-//     res.render('home', { home: true });
-// });
-//
-// app.get('/login', (req, res) => {
-//     res.render('login', { login: true });
-// });
-// app.get('/register', (req, res) => {
-//     res.render('register', { register: true });
-// });
+app.get('/', (req, res) => {
+    res.render('home', { home: true });
+});
+
+app.get('/login', (req, res) => {
+    res.render('login', { login: true });
+});
+app.get('/register', (req, res) => {
+    res.render('register', { register: true });
+});
 
 // Setup our routes
 const loginRouter = require("./routes/login-routes.js");
