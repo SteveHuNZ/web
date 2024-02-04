@@ -65,4 +65,13 @@ router.post("/send-message", verifyAuthenticated, async function (req, res) {
         res.status(500).send("Internal Server Error");
     }
 });
+router.post("/changeUsername", verifyAuthenticated, async (req, res) => {
+    let result = await userDao.updateUserName(req.session.user, req.body.newUsername);
+
+    if (result) {
+        res.redirect("/account_management?message=success");
+    } else {
+        res.redirect("/account_management?message=failure");
+    }
+});
 module.exports = router;

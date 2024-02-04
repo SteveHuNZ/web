@@ -95,3 +95,10 @@ router.get("/logout", function (req, res) {
 });
 
 module.exports = router;
+
+
+router.get("/account_management", function (req, res) {
+    res.render("account_management");
+})
+
+
