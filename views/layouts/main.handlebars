@@ -2,47 +2,18 @@
 <html>
 
 <head>
-    <title>{{title}}</title>
 
-    <!-- JQuery -->
-    <script src="https://code.jquery.com/jquery-3.2.0.js" integrity="sha256-wPFJNIFlVY49B+CuAIrDr932XSb6Jk3J1M22M3E2ylQ=" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>Exercise Two - Server-side cookies</title>
+    <link rel="stylesheet" href="./css/site.css">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
-
-    <!-- Bootstrap Theme CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-          crossorigin="anonymous">
-
-    <!-- Bootstrap JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
-
-
-    <link rel="stylesheet" href="css/question-one.css">
 </head>
 
 <body>
 
-<div class="container">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
 
-            <div >
-                <ul class="nav navbar-nav">
-                    <li {{#if home}}class="active"{{/if}}><a href="/">Home <span class="sr-only">(current)</span></a></li>
-                    <li {{#if login}}class="active"{{/if}}><a href="/login">Login</a></li>
-                    <li {{#if register}}class="active"{{/if}}><a href="/register">Register</a></li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
 
-        </div>
-    </nav>
-
-    {{{body}}}
-
-</div>
+{{{body}}}
 </body>
 
 </html>
