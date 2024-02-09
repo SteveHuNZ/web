@@ -1,0 +1,87 @@
+
+
+<div id="navibar">
+    <div id="left-box">
+        <!-- Content for left box -->
+        <ul class="nav navbar-nav">-->
+            <li ><a href="/">Home <span class="sr-only">(current)</span></a></li>
+            <li ><a href="/login">Login</a></li>
+            <li ><a href="/new-account">new-account</a></li>
+        </ul>
+    </div>
+    <div id="right-box">
+        <!-- Content for right box -->
+        <ul class="nav navbar-nav">-->
+
+            <li ><a href="/account_management">Account-management</a></li>
+
+        </ul>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <h1>New Article</h1>
+    <form action="/createArticle" method="POST">
+        <div class="flex-col mb">
+            <label for="txtTitle">Title:</label>
+            <input type="text" name="title" id="txtTitle" required>
+        </div>
+        <div class="flex-col mb">
+            <label>Content:</label>
+            <div id="editor">
+                <p>Editor content goes here.</p>
+            </div>
+        </div>
+        <div class="flex-row justify-sb align-center">
+            <button type="submit">Create article</button>
+        </div>
+    </form>
+
+</div>
+
+
+
+{{!-- <script src="https://cdn.ckeditor.com/ckeditor5/29.0.0/classic/ckeditor.js"></script> --}}
+<script src="build/ckeditor.js"></script>
+<script>
+
+    ClassicEditor
+            .create( document.querySelector( '#editor' ), {
+                //plugins: [ Essentials, Paragraph, Bold, Italic ],
+                toolbar: [ 'heading', '|', 'bold', 'italic', 'imageUpload' ],
+                image: {
+                    // 配置上传适配器
+                    upload: {
+                        //destination: 'your-cloudinary-folder', // 可选，用于指定Cloudinary中的文件夹
+                        adapter(file) {
+                            const data = new FormData();
+                            data.append('upload', file);
+
+                            return fetch('/upload', { // 上传图片的API端点
+                                method: 'POST',
+                                body: data
+                            })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.public_id && data.url) {
+                                            return {
+                                                default: data.url
+                                            };
+                                        }
+
+                                        throw new Error('上传失败');
+                                    });
+                        }
+                    }
+                }
+
+            } )
+            .then( editor => {
+                console.log( 'Editor was initialized', editor );
+            } )
+            .catch( error => {
+                console.error( error.stack );
+            } );
+</script>
