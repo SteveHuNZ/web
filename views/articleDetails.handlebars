@@ -1,0 +1,64 @@
+
+
+<div id="navibar">
+    <div id="left-box">
+        <!-- Content for left box -->
+        <ul class="nav navbar-nav">-->
+                                <li ><a href="/">Home <span class="sr-only">(current)</span></a></li>
+                                <li ><a href="/login">Login</a></li>
+                                <li ><a href="/new-account">new-account</a></li>
+                            </ul>
+    </div>
+    <div id="right-box">
+        <!-- Content for right box -->
+        <ul class="nav navbar-nav">-->
+
+                                <li ><a href="/account_management">Account-management</a></li>
+
+                            </ul>
+    </div>
+</div>
+
+
+
+<div class="container">
+<span class="labelButton" onclick="goback()">[<==BACK]</span>
+    <div>
+
+    {{#if article}}
+         <h1>{{article.Title}} </h1>
+         <p>Timestamp: {{article.CreatedTime}} -PUBLISHER: {{article.UserName}}  -HITS: {{article.Hits}} -COMMENTS: {{article.Comments}}</p >
+         <p>Content: {{article.Content}}</p >
+
+         <p>[COMMENTS]</p>
+         <div>
+              {{#if comments}}
+                   <ul>
+                         {{#each comments}}
+                              <li>
+                                   {{this.Content}} -{{this.CreatedTime}} -{{this.UserName}}
+                              </li>
+                          {{/each}}
+                   </ul>
+              {{else}}
+                  <p>No comments.</p >
+              {{/if}}
+         </div>
+        {{else}}
+            <p>No article.</p >
+        {{/if}}
+    </div>
+
+
+
+
+
+
+</div>
+
+<script>
+function goback(){
+    //history.go(-1);
+    this.location = "/";
+}
+</script>
