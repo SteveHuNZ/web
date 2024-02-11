@@ -1,0 +1,108 @@
+
+
+<div id="navibar">
+    <div id="left-box">
+        <!-- Content for left box -->
+        <ul class="nav navbar-nav">-->
+                                <li ><a href="/">Home <span class="sr-only">(current)</span></a></li>
+                                <li ><a href="/login">Login</a></li>
+                                <li ><a href="/new-account">new-account</a></li>
+                            </ul>
+    </div>
+    <div id="right-box">
+        <!-- Content for right box -->
+        <ul class="nav navbar-nav">
+                            </ul>
+    </div>
+</div>
+<div class="container">
+    <h1>Hello, {{user.name}}!</h1>
+    <p>here you can manage your account !</p>
+    <p>Click <a style="color: red;" href="./logout">here</a> to log out.</p>
+</div>
+
+<div class="container">
+    <h1>Change Your Username</h1>
+    <form id="changeUsernameForm" action="/changeUsername" method="POST">
+        <div class="form-group">
+            <label for="newUsername">New Username:</label>
+            <input type="text" id="newUsername" name="newUsername" required>
+        </div>
+        <input type="submit" value="Update Username">
+
+    </form>
+    <form>
+/
+    </form>
+
+    <form>
+        <button id="deleteAccountButton">Delete My Account</button>
+    </form>
+
+
+
+</div>
+
+<script>
+
+    //--------------------change user name
+    // document.getElementById('changeUsernameForm').addEventListener('submit', function(e) {
+    //     e.preventDefault();
+    //     // Fetch API or XMLHttpRequest can be used here to send the new username to the server
+    //     // Example using Fetch API:
+    //     const newUsername = document.getElementById('newUsername').value;
+    //
+    //     // Replace `yourEndpointURL` with the actual endpoint URL
+    //     // Ensure your server handles the request accordingly
+    //     fetch('yourEndpointURL', {
+    //         method: 'POST', // or 'PATCH'
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({ username: newUsername }),
+    //     })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 console.log('Success:', data);
+    //                 // Handle success response
+    //                 // Perhaps display a success message or redirect the user
+    //             })
+    //             .catch((error) => {
+    //                 console.error('Error:', error);
+    //                 // Handle errors here
+    //             });
+    // });
+
+    //---------------------------------------------------------delete account
+
+        document.getElementById('deleteAccountButton').addEventListener('click', function() {
+        const confirmation = confirm("Are you sure you want to delete your account? This action cannot be undone.");
+
+        if (confirmation) {
+        // Replace with the appropriate user ID or other identifying information as needed
+        const userId = 'user123';
+
+        // Replace `yourDeleteEndpointURL` with the actual endpoint URL for account deletion
+        fetch(`https://www.example.com/api/users/${userId}/delete`, {
+        method: 'DELETE',
+        // Include headers, authentication tokens, etc., as required by your backend
+    })
+        .then(response => {
+        if(response.ok) {
+        return response.json();
+    }
+        throw new Error('Network response was not ok.');
+    })
+        .then(data => {
+        console.log('Account deleted:', data);
+        // Handle the successful deletion here, e.g., redirect to a goodbye page, log out the user, etc.
+    })
+        .catch((error) => {
+        console.error('Error during account deletion:', error);
+        // Handle errors here, such as displaying a message to the user
+    });
+    }
+    });
+
+
+</script>
