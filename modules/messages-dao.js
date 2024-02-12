@@ -26,7 +26,7 @@ const messagesDao = {
         const db = await database;
 
         const messages = await db.query(
-            'select m.sent_at, m.content, u.username as sender from messages as m, lab_15_users as u where m.sender_id = u.id and m.receiver_id = ?',
+            'select m.sent_at, m.content, u.username as sender from messages as m, web_users as u where m.sender_id = u.id and m.receiver_id = ?',
             [userId]
         );
 
@@ -44,7 +44,7 @@ const messagesDao = {
 
     async getUserIdByUsername(username) {
         const db = await database;
-        const result = await db.query('SELECT id FROM lab_15_users WHERE username = ?', [username]);
+        const result = await db.query('SELECT id FROM web_users WHERE username = ?', [username]);
         return result.length > 0 ? result[0].id : null;
     },
 };

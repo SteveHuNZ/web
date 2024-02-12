@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
 // The DAO that handles CRUD operations for users.
 const userDao = require("../modules/users-dao.js");
@@ -26,23 +27,33 @@ router.get("/login", function (req, res) {
     }
 
 });
+router.get('/check-username', async (req, res) => {
+    const { username } = req.query;
+    const userExists = await userDao.userExistsWithUsername(username); //User.findOne({ where: { username } });
+    res.json({
+        isAvailable: !userExists });
+});
+
+
 
 // Add the new route handler here
 router.get("/newAccount", function (req, res) {
     res.render("new-account");
 })
 
-
-
-
 // Route handler for POST request to /newAccount
 router.post("/newAccount", async function (req, res) {
     try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10); // 10 is the salt rounds
         // Read submitted name, username, and password from the form
         const user = {
             name: req.body.name,
             username: req.body.username,
-            password: req.body.password
+            // password: req.body.password,
+            password: hashedPassword,
+            birthday: req.body.birthday,
+            description: req.body.description,
+            avatar: req.body.avatar
         }
 
         // Create a new user in the system
@@ -55,6 +66,19 @@ router.post("/newAccount", async function (req, res) {
         res.redirect("./newAccount?message=Error creating account!");
     }
 });
+
+
+//------------------------------------account management
+router.get("/account_management", function (req, res) {
+    res.render("account_management");
+})
+
+
+
+
+
+
+//--------------------------------
 
 
 
@@ -97,8 +121,14 @@ router.get("/logout", function (req, res) {
 module.exports = router;
 
 
-router.get("/account_management", function (req, res) {
-    res.render("account_management");
-})
+
+
+
+
+
+
+
+
+
 
 

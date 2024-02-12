@@ -27,6 +27,9 @@ const router = express.Router();
 
 const verifyAuthenticated = require("../modules/verify-auth.js");
 const messagesDao = require("../modules/messages-dao.js"); // 导入消息模块
+const articlesDao = require("../modules/articles-dao.js"); // 导入文章模块
+const commentsDao = require("../modules/comments-dao.js"); // 导入评论模块
+const userDao = require("../modules/users-dao");
 
 // Whenever we navigate to /, verify that we're authenticated. If we are, render the home view.
 router.get("/", verifyAuthenticated, async function (req, res) {
@@ -36,9 +39,12 @@ router.get("/", verifyAuthenticated, async function (req, res) {
 
 // 获取用户接收到的所有消息
         const receivedMessages = await messagesDao.getReceivedMessages(userId);
-
+// 获取我的文章
+        const myArticles = await articlesDao.getMyArticles(userId);
+// 获取所有文章
+        const allArticles = await articlesDao.getAllArticles();
 // 渲染主页视图，传递消息列表给视图
-        res.render("home", {messages: receivedMessages});
+        res.render("home", {messages: receivedMessages, articles: allArticles});
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
@@ -65,6 +71,7 @@ router.post("/send-message", verifyAuthenticated, async function (req, res) {
         res.status(500).send("Internal Server Error");
     }
 });
+
 router.post("/changeUsername", verifyAuthenticated, async (req, res) => {
     let result = await userDao.updateUserName(req.session.user, req.body.newUsername);
 
@@ -72,6 +79,32 @@ router.post("/changeUsername", verifyAuthenticated, async (req, res) => {
         res.redirect("/account_management?message=success");
     } else {
         res.redirect("/account_management?message=failure");
+    }
+});
+
+router.get("/articleDetails", verifyAuthenticated, async (req, res) => {
+    console.log('id ===>'+req.query.id);
+    let theArticle = await articlesDao.getArticleById(req.query.id);
+    let allComments = await commentsDao.getAllComments(req.query.id);
+    res.render("articleDetails", {article: theArticle, comments: allComments});
+});
+
+router.get("/newArticle", verifyAuthenticated, async (req, res) => {
+    res.render("createArticle");
+});
+
+router.post("/createArticle", async function (req, res) {
+    try {
+        const article = {
+            userId: req.session.user.id,
+            userName: req.session.user.username,
+            title: req.body.title,
+            content: req.body.content,
+        }
+        await articlesDao.createArticle(article);
+        res.redirect("./");
+    } catch (error) {
+        console.log("ERROR,PLEASE SUBMIT AGAIN.");
     }
 });
 module.exports = router;

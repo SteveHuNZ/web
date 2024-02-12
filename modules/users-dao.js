@@ -1,17 +1,32 @@
-const database = require("./database.js");
 
+
+const database = require("./database.js");
+const bcrypt = require("bcrypt");
+
+async function userExistsWithUsername(username) {
+    const db = await database;
+
+    const user = await db.query(
+        "select username from web_users where username = ?",
+        [username]);
+
+    return user.length > 0;
+}
 /**
  * Inserts the given user into the database. Then, reads the ID which the database auto-assigned, and adds it
  * to the user.
  *
  * @param user the user to insert
  */
+
+
+
 async function createUser(user) {
     const db = await database;
 
     const result = await db.query(
-        "insert into web_users (username, password, name) values (?, ?, ?)",
-        [user.username, user.password, user.name]);
+        "insert into web_users (username, password, name,description,birthday) values (?, ?,?, ?,  ?)",
+        [user.username, user.password, user.name,user.description, user.birthday]);
 
     // Get the auto-generated ID value, and assign it back to the user object.
     user.id = result.insertId;
@@ -46,10 +61,20 @@ async function retrieveUserWithCredentials(username, password) {
     const db = await database;
 
     const user = await db.query(
-        "select * from web_users where username = ? and password = ?",
-        [username, password]);
+        "select * from web_users where username = ?",
+        [username]);
 
-    return user[0];
+    if (user.length === 0) {
+        return undefined;
+    }
+
+    let result = await bcrypt.compare(password, user[0].password);
+
+    if (result === true) {
+        return user[0];
+    } else {
+        return undefined;
+    }
 }
 
 /**
@@ -85,12 +110,26 @@ async function deleteUser(id) {
     await db.query("delete from web_users where id = ?", [id]);
 }
 
+async function updateUserName(user, name) {
+    const db = await database;
+
+    try {
+        let result = await db.query("update web_users set username = ? where id = ?", [name, user.id]);
+
+        return result.rowsAffected !== 0;
+    } catch (e) {
+        return false;
+    }
+}
+
 // Export functions.
 module.exports = {
     createUser,
     retrieveUserById,
     retrieveUserWithCredentials,
+    userExistsWithUsername,
     retrieveAllUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateUserName
 };
