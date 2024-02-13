@@ -276,6 +276,11 @@ function openPopupNew(articleId) {
   document.getElementById('textArticleId').value = articleId;
 }
 function openPopup(articleId,commentId) {
+    var user = "{{user}}";
+    if(user == ""){
+        this.location = "/login";
+        return;
+    }
   document.getElementById('mask').style.display = 'block';
   document.getElementById('popup').style.display = 'block';
   document.getElementById('textArticleId').value = articleId;

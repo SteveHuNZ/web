@@ -159,23 +159,23 @@ router.get("/deleteAccount", function (req, res) {
 
     const myArticles = articlesDao.getMyArticles(userId);
     myArticles.forEach(function(item){
-        let articleId = item.ArticleId;
-        deleteArticle(articleId);//删除文章以及该文章的所有点赞、评论
+      let articleId = item.ArticleId;
+      deleteArticle(articleId);//删除文章以及该文章的所有点赞、评论
     });
 
     const myComments = commentsDao.getMyComments(userId);
-    myComments.forEach(function(item){
-        let replyNum = item.ReplyNum;
-        let commentId = item.Id;
-        let parentId = item.ParentId;
-        if(parentId == -1){//顶级评论1
-            commentsDao.deleteComment_1(commentId);
-        }else if(parentId > 0 && replyNum > 0){//跟帖回复2
-            commentsDao.deleteComment_2(parentId,commentId);
-        }else{//跟帖回复3
-            commentsDao.deleteComment_3(parentId,commentId);
-        }
-    });
+        myComments.forEach(function(item){
+          let replyNum = item.ReplyNum;
+          let commentId = item.Id;
+          let parentId = item.ParentId;
+          if(parentId == -1){//顶级评论1
+              commentsDao.deleteComment_1(commentId);
+          }else if(parentId > 0 && replyNum > 0){//跟帖回复2
+              commentsDao.deleteComment_2(parentId,commentId);
+          }else{//跟帖回复3
+              commentsDao.deleteComment_3(parentId,commentId);
+          }
+        });
     res.status(200).send("SUCCESS");
 });
 

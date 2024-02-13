@@ -1,32 +1,32 @@
 
 
-<nav class="navbar navbar-default navbar-fixed-top navbar-inverse"  role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> HOME</a>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse"  role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> HOME</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+              {{#if user}}
+                    <li>&nbsp;&nbsp;
+                     {{#if user.avatar}}
+                     <img class="avatar" src="{{user.avatar}}" />
+                     {{else}}
+                     <span class="glyphicon glyphicon-user"></span>
+                     {{/if}}
+                     WELCOME {{user.name}}</li>
+                    <li><a href="/account_management"><span class="glyphicon glyphicon-log-in"></span> EDIT</a></li>
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> LOGOUT</a></li>
+              {{else}}
+                    <li><a href="/newAccount"><span class="glyphicon glyphicon-user"></span> REGISTER</a></li>
+                    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> LOGIN</a></li>
+              {{/if}}
+            </ul>
         </div>
-        <ul class="nav navbar-nav navbar-right">
-            {{#if user}}
-                <li>&nbsp;&nbsp;
-                    {{#if user.avatar}}
-                        <img class="avatar" src="{{user.avatar}}" />
-                    {{else}}
-                        <span class="glyphicon glyphicon-user"></span>
-                    {{/if}}
-                    WELCOME {{user.name}}</li>
-                <li><a href="/account_management"><span class="glyphicon glyphicon-log-in"></span> EDIT</a></li>
-                <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> LOGOUT</a></li>
-            {{else}}
-                <li><a href="/newAccount"><span class="glyphicon glyphicon-user"></span> REGISTER</a></li>
-                <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> LOGIN</a></li>
-            {{/if}}
-        </ul>
-    </div>
-</nav>
-<br/>
-<br/>
-<br/>
-<br/>
+    </nav>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 <div class="container">
     <h1>Hello, {{user.name}}!</h1>
     here you can manage your account !  Click <a style="color: red;" href="./logout">here</a> to log out.<br/>
@@ -36,51 +36,51 @@
 <div class="container">
     <h1>Change Your Profile </h1>
     <form action="./changeUserProfile" method="POST">
-        <div class="flex-col mb">
-            <input type="hidden" name="userId" id="userId" value="{{user.id}}" required>
-            <label for="txtUsername">Username:</label>
-            <input type="text" name="username" id="txtUsername" value="{{user.username}}" onkeyup="checkUsernameAvailability()" required>
-            <span id="usernameAvailability"></span>
-        </div>
-        <div class="flex-col mb">
-            <label for="txtPassword">Password:</label>
-            <input type="password" name="password" id="txtPassword" required>
-        </div>
-        <div class="flex-col mb">
-            <label for="txtConfirmPassword">Re-enter Password:</label>
-            <input type="password" name="confirmPassword" id="txtConfirmPassword" onblur="checkPasswordMatch()" required>
-            <div id="message"></div>
-        </div>
-        <div class="flex-col mb">
-            <label for="txtName">Name:</label>
-            <input type="text" name="name" id="txtName" value="{{user.name}}" required>
-        </div>
-        <div class="flex-col mb">
-            <label for="description">self-description:</label>
-            <textarea  id="description" name="description" required>{{user.description}}</textarea>
-        </div>
-        <div class="flex-col mb">
-            <label for="birthday">birthday:</label>
-            <input type="date" id="birthday" name="birthday" value="{{user.birthday}}"  onfocus="setMaxDate()" oninput="validateBirthday()" required>
-            <span id="birthdayError" style="color:red;"></span>
-        </div>
-        <br><br>
-        <div class="flex-col mb">
-            <label for="avatar">Choose an Avatar:</label>
-            <div id="avatarSelection">
-                <!-- Example with radio buttons -->
-                <input type="radio" id="avatar1" name="avatar" value="images/female.png">
-                <label for="avatar1"><img src="images/female.jpg" height="80" width="80" alt="Avatar 1"></label>
-
-                <input type="radio" id="avatar2" name="avatar" value="images/male.png">
-                <label for="avatar2"><img src="images/male.jpg" height="80" width="80" alt="Avatar 2"></label>
-                <!-- Add more avatars as needed -->
+            <div class="flex-col mb">
+                <input type="hidden" name="userId" id="userId" value="{{user.id}}" required>
+                <label for="txtUsername">Username:</label>
+                <input type="text" name="username" id="txtUsername" value="{{user.username}}" onkeyup="checkUsernameAvailability()" required>
+                <span id="usernameAvailability"></span>
             </div>
-        </div>
-        <div class="flex-row justify-sb align-center">
-            <button type="submit">Update My Profile</button>
-        </div>
-    </form>
+            <div class="flex-col mb">
+                <label for="txtPassword">Password:</label>
+                <input type="password" name="password" id="txtPassword" required>
+            </div>
+            <div class="flex-col mb">
+                <label for="txtConfirmPassword">Re-enter Password:</label>
+                <input type="password" name="confirmPassword" id="txtConfirmPassword" onblur="checkPasswordMatch()" required>
+                <div id="message"></div>
+            </div>
+            <div class="flex-col mb">
+                <label for="txtName">Name:</label>
+                <input type="text" name="name" id="txtName" value="{{user.name}}" required>
+            </div>
+            <div class="flex-col mb">
+                <label for="description">self-description:</label>
+                <textarea  id="description" name="description" required>{{user.description}}</textarea>
+            </div>
+            <div class="flex-col mb">
+                <label for="birthday">birthday:</label>
+                <input type="date" id="birthday" name="birthday" value="{{user.birthday}}"  onfocus="setMaxDate()" oninput="validateBirthday()" required>
+                <span id="birthdayError" style="color:red;"></span>
+            </div>
+            <br><br>
+            <div class="flex-col mb">
+                <label for="avatar">Choose an Avatar:</label>
+                <div id="avatarSelection">
+                    <!-- Example with radio buttons -->
+                    <input type="radio" id="avatar1" name="avatar" value="images/female.png">
+                    <label for="avatar1"><img src="images/female.jpg" height="80" width="80" alt="Avatar 1"></label>
+
+                    <input type="radio" id="avatar2" name="avatar" value="images/male.png">
+                    <label for="avatar2"><img src="images/male.jpg" height="80" width="80" alt="Avatar 2"></label>
+                    <!-- Add more avatars as needed -->
+                </div>
+            </div>
+            <div class="flex-row justify-sb align-center">
+                <button type="submit">Update My Profile</button>
+            </div>
+        </form>
 
 
 
@@ -122,26 +122,26 @@
         const confirmation = confirm("Are you sure you want to delete your account? This action cannot be undone.");
 
         if (confirmation) {
-            // Replace with the appropriate user ID or other identifying information as needed
-            const userId = document.getElementById('userId').value;
-            let data = {"userId":userId};
+        // Replace with the appropriate user ID or other identifying information as needed
+        const userId = document.getElementById('userId').value;
+        let data = {"userId":userId};
 
-            // Replace `yourDeleteEndpointURL` with the actual endpoint URL for account deletion
-            fetch(`/deleteAccount`, {
-                method: 'GET',
-                data: data
-            })
-                    .then(res => {
-                        if(res=="SUCCESS"){
-                            alert("YOUR ACCOUNT HAS BEEN DELETED SUCCESSFULLY.");
-                        }else{
-                            alert("DELETE ERROR, PLEASE TRY AGAIN LATER.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Error during account deletion:', error);
-                    });
+        // Replace `yourDeleteEndpointURL` with the actual endpoint URL for account deletion
+        fetch(`/deleteAccount`, {
+        method: 'GET',
+        data: data
+    })
+        .then(res => {
+        if(res=="SUCCESS"){
+            alert("YOUR ACCOUNT HAS BEEN DELETED SUCCESSFULLY.");
+        }else{
+            alert("DELETE ERROR, PLEASE TRY AGAIN LATER.");
         }
+    })
+        .catch((error) => {
+        console.error('Error during account deletion:', error);
+    });
+    }
     });
 
 

@@ -34,60 +34,60 @@ const userDao = require("../modules/users-dao");//
 
 
 router.get("/clickLike", verifyAuthenticated, async function (req, res) {
-    try {
-        const like = {
-            articleId: req.query.articleId,
-            userId: req.session.user.id,
-        }
-        await hitsDao.createLike(like);
-        res.status(200).send("SUCCESS");
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+                                   try {
+                                       const like = {
+                                           articleId: req.query.articleId,
+                                           userId: req.session.user.id,
+                                       }
+                                       await hitsDao.createLike(like);
+                                       res.status(200).send("SUCCESS");
+                                   } catch (error) {
+                                       console.error(error);
+                                       res.status(500).send("Internal Server Error");
+                                   }
+                               });
 router.get("/deleteComments_3", verifyAuthenticated, async function (req, res) {
-    try {
-        var parentId = req.query.parentId;
-        var commentId = req.query.commentId;
-        await commentsDao.deleteComment_3(parentId,commentId);
-        res.status(200).send("SUCCESS");
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+                                   try {
+                                       var parentId = req.query.parentId;
+                                       var commentId = req.query.commentId;
+                                       await commentsDao.deleteComment_3(parentId,commentId);
+                                       res.status(200).send("SUCCESS");
+                                   } catch (error) {
+                                       console.error(error);
+                                       res.status(500).send("Internal Server Error");
+                                   }
+                               });
 router.get("/deleteComments_2", verifyAuthenticated, async function (req, res) {
-    try {
-        var parentId = req.query.parentId;
-        var commentId = req.query.commentId;
-        await commentsDao.deleteComment_2(parentId,commentId);
-        res.status(200).send("SUCCESS");
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+                                   try {
+                                       var parentId = req.query.parentId;
+                                       var commentId = req.query.commentId;
+                                       await commentsDao.deleteComment_2(parentId,commentId);
+                                       res.status(200).send("SUCCESS");
+                                   } catch (error) {
+                                       console.error(error);
+                                       res.status(500).send("Internal Server Error");
+                                   }
+                               });
 router.get("/deleteComments_1", verifyAuthenticated, async function (req, res) {
-    try {
-        var commentId = req.query.commentId;
-        await commentsDao.deleteComment_1(commentId);
-        res.status(200).send("SUCCESS");
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+                                   try {
+                                       var commentId = req.query.commentId;
+                                       await commentsDao.deleteComment_1(commentId);
+                                       res.status(200).send("SUCCESS");
+                                   } catch (error) {
+                                       console.error(error);
+                                       res.status(500).send("Internal Server Error");
+                                   }
+                               });
 router.get("/deleteAllComments", verifyAuthenticated, async function (req, res) {
-    try {
-        var articleId = req.query.articleId;
-        await commentsDao.deleteAllComments(articleId);
-        res.status(200).send("SUCCESS");
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+                                   try {
+                                       var articleId = req.query.articleId;
+                                       await commentsDao.deleteAllComments(articleId);
+                                       res.status(200).send("SUCCESS");
+                                   } catch (error) {
+                                       console.error(error);
+                                       res.status(500).send("Internal Server Error");
+                                   }
+                               });
 router.post("/addComment", verifyAuthenticated, async function (req, res) {
     try {
         var articleId = req.body.articleId;
@@ -115,14 +115,14 @@ router.get("/getReplies", verifyAuthenticated, async function (req, res) {
         const userId = req.session.user.id;
         let replies = await commentsDao.getReplies(req.query.parentId);
         // 增加新字段
-        replies = replies.map(item => {
-            if(item.UserId == req.session.user.id){
+            replies = replies.map(item => {
+              if(item.UserId == req.session.user.id){
                 item.isMine = true;
-            }else{
+              }else{
                 item.isMine = false;
-            }
-            return item;
-        });
+              }
+              return item;
+            });
         res.status(200).send(replies);
     } catch (error) {
         console.error(error);
@@ -134,14 +134,14 @@ router.get("/pageArticles", verifyAuthenticated, async function (req, res) {
         const userId = req.session.user.id;
         let allArticles = await articlesDao.getAllArticles();
         // 增加新字段
-        allArticles = allArticles.map(item => {
-            if(item.UserId == req.session.user.id){
+            allArticles = allArticles.map(item => {
+              if(item.UserId == req.session.user.id){
                 item.isMine = true;
-            }else{
+              }else{
                 item.isMine = false;
-            }
-            return item;
-        });
+              }
+              return item;
+            });
         //res.render("home", {messages: receivedMessages, articles: allArticles, myUserId: userId});
         res.status(200).send(allArticles);
     } catch (error) {
@@ -156,14 +156,14 @@ router.get("/allArticles", verifyAuthenticated, async function (req, res) {
         const receivedMessages = await messagesDao.getReceivedMessages(userId);
         let allArticles = await articlesDao.getAllArticles();
         // 增加新字段
-        allArticles = allArticles.map(item => {
-            if(item.UserId == req.session.user.id){
+            allArticles = allArticles.map(item => {
+              if(item.UserId == req.session.user.id){
                 item.isMine = true;
-            }else{
+              }else{
                 item.isMine = false;
-            }
-            return item;
-        });
+              }
+              return item;
+            });
         res.render("home", {messages: receivedMessages, articles: allArticles, myUserId: userId});
     } catch (error) {
         console.error(error);
@@ -176,10 +176,10 @@ router.get("/myArticles", verifyAuthenticated, async function (req, res) {
         //const receivedMessages = await messagesDao.getReceivedMessages(userId);
         var myArticles = await articlesDao.getMyArticles(userId);
         // 增加新字段
-        myArticles = myArticles.map(item => {
-            item.isMine = false;
-            return item;
-        });
+            myArticles = myArticles.map(item => {
+              item.isMine = false;
+              return item;
+            });
         res.render("home", {articles: myArticles, myUserId: userId});
     } catch (error) {
         console.error(error);
@@ -191,23 +191,23 @@ router.get("/", async function (req, res) {
     try {
         const user = req.session.user;
         if(user == null){
-            let allArticles = await articlesDao.getAllArticles();
-            res.render("home", {articles: allArticles});
+                let allArticles = await articlesDao.getAllArticles();
+                res.render("home", {articles: allArticles});
         }else{
             const userId = req.session.user.id;
-            const userName = req.session.user.username;
-            //const receivedMessages = await messagesDao.getReceivedMessages(userId);
-            let allArticles = await articlesDao.getAllArticles();
-            allArticles = allArticles.map(item => {
-                if(item.UserId == req.session.user.id){
-                    item.isMine = true;
-                }else{
-                    item.isMine = false;
-                }
-                return item;
-            });
-            //res.render("home", {messages: receivedMessages, articles: allArticles, myUserId: userId, user: user});
-            res.render("home", {articles: allArticles, myUserId: userId, user: user});
+                    const userName = req.session.user.username;
+                    //const receivedMessages = await messagesDao.getReceivedMessages(userId);
+                    let allArticles = await articlesDao.getAllArticles();
+                        allArticles = allArticles.map(item => {
+                          if(item.UserId == req.session.user.id){
+                            item.isMine = true;
+                          }else{
+                            item.isMine = false;
+                          }
+                          return item;
+                        });
+                    //res.render("home", {messages: receivedMessages, articles: allArticles, myUserId: userId, user: user});
+                    res.render("home", {articles: allArticles, myUserId: userId, user: user});
         }
 
 
@@ -259,23 +259,23 @@ router.get("/articleDetails", async (req, res) => {
     // 增加新字段
     if(user){
         if(theArticle.UserId == req.session.user.id){
-            theArticle.isMine = true;
-        }else{
-            theArticle.isMine = false;
-        }
+                    theArticle.isMine = true;
+                  }else{
+                    theArticle.isMine = false;
+                  }
     }
 
     let allComments = await commentsDao.getAllComments(articleId);
     // 增加新字段
     if(user){
-        allComments = allComments.map(item => {
+      allComments = allComments.map(item => {
             if(item.UserId == req.session.user.id){
-                item.isMine = true;
+              item.isMine = true;
             }else{
-                item.isMine = false;
+              item.isMine = false;
             }
             return item;
-        });
+          });
     }
     res.render("articleDetails", {article: theArticle, comments: allComments, user: user});
 });
