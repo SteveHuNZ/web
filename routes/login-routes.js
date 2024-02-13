@@ -5,9 +5,9 @@ const bcrypt = require('bcrypt');
 // The DAO that handles CRUD operations for users.
 const userDao = require("../modules/users-dao.js");
 
-const articlesDao = require("../modules/articles-dao.js"); // 导入文章模块
-const commentsDao = require("../modules/comments-dao.js"); // 导入评论模块
-const hitsDao = require("../modules/hits-dao.js"); // 导入点赞模块
+const articlesDao = require("../modules/articles-dao.js"); // improt article mode
+const commentsDao = require("../modules/comments-dao.js"); // import comments
+const hitsDao = require("../modules/hits-dao.js"); // import hits
 
 // Whenever we navigate to ANY page, make the "user" session object available to the
 // Handlebars engine by adding it to res.locals.

@@ -33,7 +33,7 @@ const messagesDao = {
         return messages;
     },
 
-// 任务3：根据消息 ID 删除一条消息
+
     async deleteMessage(messageId) {
         const db = await database;
 

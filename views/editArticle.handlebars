@@ -59,7 +59,7 @@ ClassicEditor
     .create( document.querySelector( '#editor' ), {
         toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'imageUpload' ],
         ckfinder: {
-                    uploadUrl: '/upload' // 图片上传的服务器端路径
+                    uploadUrl: '/upload' // updata trak of the documents
                 },
     } )
     .then( editor => {
@@ -68,7 +68,6 @@ ClassicEditor
     .catch( error => {
         console.error( error.stack );
     } );
-    //当用户在CKEditor中点击上传图片时，图片会被发送到/upload端点，
-    //然后保存到服务器的uploads目录下。服务器端的端点再返回图片的URL，CKEditor会将其插入到编辑器中。
+
 </script>
 

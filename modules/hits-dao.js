@@ -6,7 +6,7 @@ const hitsDao = {
             'INSERT INTO lab_15_hits (ArticleId, UserId) VALUES (?, ?)',
             [like.articleId, like.userId]
         );
-        //修改文章表里的评论数
+        //modify the comments numbers of the article comments area
         await db.query(
             'UPDATE lab_15_articles SET Hits = Hits+1 WHERE Id = ?',[like.articleId]
         );
@@ -18,7 +18,7 @@ const hitsDao = {
             const result = await db.query(
                 'DELETE FROM lab_15_hits WHERE UserId = ?', [userId]
             );
-            return result.affectedRows > 0; // 如果删除了一行，则返回 true
+            return result.affectedRows > 0; // if delete the first row , return true
     }
 };
 module.exports = hitsDao;

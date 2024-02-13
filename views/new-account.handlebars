@@ -15,7 +15,7 @@
                             if (!data.isAvailable) {
                                 document.getElementById("usernameAvailability").style.color = "red";
                             } else {
-                                // 如果用户名可用，可以选择重置颜色
+                                // if the account name is available, set the initial color
                                 document.getElementById("usernameAvailability").style.color = "initial";
                             }
                         }
@@ -52,7 +52,7 @@
 
              if (inputDate > today) {
              // 显示错误消息
-             document.getElementById('birthdayError').textContent = '生日不能是未来的日期';
+             document.getElementById('birthdayError').textContent = 'birthday cannot be in the future ';
              // 可以选择清空无效的输入值
              document.getElementById('birthday').value = '';
          } else {

@@ -46,33 +46,14 @@ const articlesDao = {
             return articles[0];//ONLY ONE RECORD.
         },
 
-// 根据文章 ID 删除一条文章==>需要同时删除所有与该文章相关评论和点赞【未处理】
+
+    //depending id to delete article
     async deleteArticle(articleId) {
         const db = await database;
         await db.query('DELETE FROM lab_15_hits WHERE ArticleId = ?', [articleId]);
         await db.query('DELETE FROM lab_15_comments WHERE ArticleId = ?', [articleId]);
         await db.query('DELETE FROM lab_15_articles WHERE Id = ?', [articleId]);
         return true;
-
-//        const result1 = await db.query('DELETE FROM lab_15_hits WHERE ArticleId = ?', [articleId]);
-//        if(result1.affectedRows > 0){
-//            const result2 = await db.query('DELETE FROM lab_15_comments WHERE ArticleId = ?', [articleId]);
-//            if(result2.affectedRows > 0){
-//                const result3 = await db.query('DELETE FROM lab_15_articles WHERE Id = ?', [articleId]);
-//                if(result3.affectedRows > 0){
-//                    return true;
-//                }else{
-//                    return false;
-//                }
-//            }else{
-//                return false;
-//            }
-//        }else{
-//            return false;
-//        }
-//        return false;
-        // 如果删除了一行，result.affectedRows则返回 true
-    },
 
     async getUserIdByUsername(username) {
         const db = await database;

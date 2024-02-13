@@ -41,18 +41,27 @@
 
     {{#if article}}
          <h1>{{article.Title}}</h1>
-         <p>{{article.CreatedTime}} -PUBLISHER: {{article.UserName}}  -HITS: {{article.Hits}} -COMMENTS: {{article.Comments}}</p >
+        <p>{{article.CreatedTime}} -PUBLISHER: {{article.UserName}}  -HITS: <span id="hits" style="color: red; border: 1px solid red;">{{article.Hits}}</span>
+            -COMMENTS: <span style="color: red; border: 1px solid red;">{{article.Comments}}</span></p >
+
          <div id="div1">
              <iframe id="dizhi" srcdoc="{{article.Content}}" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>
          </div >
 
          <p>
+             <button style="background-color: lightblue; color: white; border: none; padding: 10px 20px; cursor: pointer;" onclick="toggleComments()">
          <span class="commentsToggle" id="togglename" onclick="toggleComments()">[HIDE COMMENTS]</span>
+             </button>
+             <button style="background-color: lightblue; color: white; border: none; padding: 10px 20px; cursor: pointer;" onclick="toggleComments()">
          <span class="labelComment" onclick="openPopupNew({{article.Id}})">
-         {{#if user}}
+
          [NEW COMMENT]</span>
+             </button>
+
+                 <button style="background-color: lightblue; color: white; border: none; padding: 10px 20px; cursor: pointer;" onclick="toggleComments()">
          <span class="labelLike" onclick="clickLike({{article.Id}})">[LIKE]</span>
-         {{/if}}
+                 </button>
+
          </p>
          <div id="commentsDiv">
               {{#if comments}}
@@ -61,9 +70,16 @@
                          {{#each comments}}
                               <li>
                                    {{this.Content}} -{{this.CreatedTime}} -{{this.UserName}}
+                                  <button style="background-color: lightblue; color: black; border: none; padding: 5px 10px; cursor: pointer;" onclick="openPopup({{this.ArticleId}},{{this.Id}})">
                                    <span class="labelComment" onclick="openPopup({{this.ArticleId}},{{this.Id}})">[reply]</span>
+                                  </button>
                                    {{#if this.isMine}}<span class="labelDeleteComment" onclick="deleteComments_1({{this.Id}})">[DELETE]</span>{{/if}}
-                                   {{#if this.ReplyNum}}-<span class="labelOperation" onclick="getReplies(this,{{this.Id}})">{{this.ReplyNum}} replies</span>{{/if}}
+                                   {{#if this.ReplyNum}}-<span class="labelOperation" onclick="getReplies(this,{{this.Id}})">
+                                       <span id="hits" style="color: red; border: 1px solid red;"> {{this.ReplyNum}}
+
+                                       </span> replies</span>
+
+                                   {{/if}}
 
                               </li>
                           {{/each}}
@@ -82,7 +98,7 @@
 <div id="mask" style="display: none;"></div>
 <!-- 弹出div -->
 <div id="popup" style="display: none;">
-  <p>添加评论</p>
+  <p>add comments</p>
     <form id="formComment">
         <input type="hidden" id="textArticleId" name="articleId">
         <input type="hidden" id="textCommentId" name="commentId">
@@ -94,7 +110,7 @@
             <button type="submit">ADD</button>
         </div>
     </form>
-    <div><button onclick="closePopup()">关闭</button></div>
+    <div><button onclick="closePopup()">close</button></div>
 </div>
 
 
@@ -102,18 +118,25 @@
 
 
 <script>
-function clickLike(articleId){
-    let data = {"articleId": articleId};
-    $.get('/clickLike', data, function(res){
-                    if(res == "SUCCESS"){
-                        alert("SUCCESS");
-                        //location.reload();
-                    }else{
-                        alert("FAILED. PLEASE TRY AGAIN LATER.");
-                        return;
-                    }
-                });
-}
+    function clickLike(articleId){
+        var user = "{{user}}";
+        if(user == ""){
+            this.location = "/login";
+            return;
+        }
+        let data = {"articleId": articleId};
+        $.get('/clickLike', data, function(res){
+            if(res == "SUCCESS"){
+                alert("SUCCESS");
+                //location.reload();
+                document.getElementById('hits').innerHTML = parseInt("{{article.Hits}}")+1;
+            }else{
+                alert("FAILED. PLEASE TRY AGAIN LATER.");
+                return;
+            }
+        });
+    }
+
 function deleteComments_3(parentId,commentId){
     let data = {"parentId": parentId,"commentId": commentId};
     $.get('/deleteComments_3', data, function(res){
@@ -126,6 +149,7 @@ function deleteComments_3(parentId,commentId){
                     }
                 });
 }
+
 function deleteComments_2(parentId,commentId){
     let data = {"parentId": parentId,"commentId": commentId};
     $.get('/deleteComments_2', data, function(res){
@@ -202,7 +226,8 @@ function getReplies(obj,parentId){
                                 <ul class="subComments"><li>
                                 ${comment.Content}  -${comment.CreatedTime} -${comment.UserName}<span class="labelComment" onclick="openPopup(${comment.ArticleId},${comment.Id})">[reply]</span>
                                 <span class="labelDeleteComment" onclick="deleteComments_2(${comment.ParentId},${comment.Id})">[DELETE]</span>
-                                -<span class="labelOperation" onclick="getReplies2(this,${comment.Id})">${comment.ReplyNum} replies</span>
+                                ---<span class="labelOperation" onclick="getReplies2(this,${comment.Id})" >
+${comment.ReplyNum} replies</span>
                                 `;
                             }
               }else{
@@ -271,6 +296,11 @@ window.onload = function () {
  setIframeHeight(document.getElementById('dizhi'));
 };
 function openPopupNew(articleId) {
+    var user = "{{user}}";
+    if(user == ""){
+        this.location = "/login";
+        return;
+    }
   document.getElementById('mask').style.display = 'block';
   document.getElementById('popup').style.display = 'block';
   document.getElementById('textArticleId').value = articleId;
