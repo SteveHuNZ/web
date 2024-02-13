@@ -1,119 +1,74 @@
 
 
-<div id="navibar">
-    <div id="left-box">
-        <!-- Content for left box -->
-        <ul class="nav navbar-nav">-->
-            <li ><a href="/">Home <span class="sr-only">(current)</span></a></li>
-            <li ><a href="/login">Login</a></li>
-            <li ><a href="/new-account">new-account</a></li>
-        </ul>
-    </div>
-    <div id="right-box">
-        <!-- Content for right box -->
-        <ul class="nav navbar-nav">-->
-
-            <li ><a href="/account_management">Account-management</a></li>
-
-        </ul>
-    </div>
-</div>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse"  role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> HOME</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+              {{#if user}}
+                    <li>&nbsp;&nbsp;
+                     {{#if user.avatar}}
+                     <img class="avatar" src="{{user.avatar}}" />
+                     {{else}}
+                     <span class="glyphicon glyphicon-user"></span>
+                     {{/if}}
+                     WELCOME {{user.name}}</li>
+                    <li><a href="/account_management"><span class="glyphicon glyphicon-log-in"></span> EDIT</a></li>
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> LOGOUT</a></li>
+              {{else}}
+                    <li><a href="/newAccount"><span class="glyphicon glyphicon-user"></span> REGISTER</a></li>
+                    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> LOGIN</a></li>
+              {{/if}}
+            </ul>
+        </div>
+    </nav>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
 
 
 <div class="container">
-
-    <h1>Hello, {{user.name}}!</h1>
-    <p>This is your homepage!</p>
-    <p>Click <a href="./logout">here</a> to log out.</p>
-
-
-    {{#if successMessage}}
-        <p class="success-message">{{successMessage}}</p>
-    {{/if}}
-    {{#if errorMessage}}
-        <p class="error-message">{{errorMessage}}</p>
-    {{/if}}
-
-    <!-- Form for sending messages -->
-    <form action="/send-message" method="post">
+<h1>Edit Article</h1>
+    <form action="/modifyArticle" method="POST">
+        <input type="hidden" name="articleId" value="{{article.Id}}">
         <div class="flex-col mb">
-            <label for="txtReceiverUsername">Receiver Username:</label>
-            <input type="text" name="receiverUsername" id="txtReceiverUsername" required>
+            <label for="txtTitle">Title:</label>
+            <input type="text" name="title" id="txtTitle" value="{{article.Title}}" required>
         </div>
-
         <div class="flex-col mb">
-            <label for="txtMessageContent">Message Content:</label>
-            <textarea name="content" id="txtMessageContent" required></textarea>
+            <label>Content:</label>
+            <textarea name="content" id="editor">{{article.Content}}</textarea>
         </div>
-
         <div class="flex-row justify-sb align-center">
-            <button type="submit">Send Message</button>
+            <button type="submit">Modify article</button>
         </div>
     </form>
 
-
-
-    {{#if messages}}
-        <ul>
-            {{#each messages}}
-                <li>
-                    <p>Timestamp: {{this.sent_at}}</p >
-                    <p>Sender: {{this.sender}}</p >
-                    <p>Content: {{this.content}}</p >
-                </li>
-            {{/each}}
-        </ul>
-    {{else}}
-        <p>No messages received.</p >
-    {{/if}}
 </div>
 
-<div class="col-md-12"  style="padding: 3px 480px 300px 480px">
-    <div id="editor">
-        <p>Editor content goes here.</p>
-    </div>
-</div>
+
 
 {{!-- <script src="https://cdn.ckeditor.com/ckeditor5/29.0.0/classic/ckeditor.js"></script> --}}
 <script src="build/ckeditor.js"></script>
 <script>
 
-    ClassicEditor
-            .create( document.querySelector( '#editor' ), {
-                //plugins: [ Essentials, Paragraph, Bold, Italic ],
-                toolbar: [ 'heading', '|', 'bold', 'italic', 'imageUpload' ],
-                image: {
-                    // 配置上传适配器
-                    upload: {
-                        //destination: 'your-cloudinary-folder', // 可选，用于指定Cloudinary中的文件夹
-                        adapter(file) {
-                            const data = new FormData();
-                            data.append('upload', file);
-
-                            return fetch('/upload', { // 上传图片的API端点
-                                method: 'POST',
-                                body: data
-                            })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.public_id && data.url) {
-                                            return {
-                                                default: data.url
-                                            };
-                                        }
-
-                                        throw new Error('上传失败');
-                                    });
-                        }
-                    }
-                }
-
-            } )
-            .then( editor => {
-                console.log( 'Editor was initialized', editor );
-            } )
-            .catch( error => {
-                console.error( error.stack );
-            } );
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'imageUpload' ],
+        ckfinder: {
+                    uploadUrl: '/upload' // 图片上传的服务器端路径
+                },
+    } )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
+    //当用户在CKEditor中点击上传图片时，图片会被发送到/upload端点，
+    //然后保存到服务器的uploads目录下。服务器端的端点再返回图片的URL，CKEditor会将其插入到编辑器中。
 </script>
+

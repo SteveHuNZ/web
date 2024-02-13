@@ -1,80 +1,62 @@
 
 
-<div id="navibar">
-    <div id="left-box">
-        <!-- Content for left box -->
-        <ul class="nav navbar-nav">-->
-            <li ><a href="/">Home <span class="sr-only">(current)</span></a></li>
-            <li ><a href="/login">Login</a></li>
-            <li ><a href="/new-account">new-account</a></li>
-        </ul>
-    </div>
-    <div id="right-box">
-        <!-- Content for right box -->
-        <ul class="nav navbar-nav">-->
 
-            <li ><a href="/account_management">Account-management</a></li>
-
-        </ul>
-    </div>
-</div>
-
-
-
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse"  role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> HOME</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+              {{#if user}}
+                    <li>&nbsp;&nbsp;
+                     {{#if user.avatar}}
+                     <img class="avatar" src="{{user.avatar}}" />
+                     {{else}}
+                     <span class="glyphicon glyphicon-user"></span>
+                     {{/if}}
+                     WELCOME {{user.name}}</li>
+                    <li><a href="/account_management"><span class="glyphicon glyphicon-log-in"></span> EDIT</a></li>
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> LOGOUT</a></li>
+              {{else}}
+                    <li><a href="/newAccount"><span class="glyphicon glyphicon-user"></span> REGISTER</a></li>
+                    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> LOGIN</a></li>
+              {{/if}}
+            </ul>
+        </div>
+    </nav>
+<br/>
+<br/>
+<br/>
+<br/>
 <div class="container">
-
-    <h1>Hello, {{user.name}}!</h1>
-    <p>This is your homepage!</p>
-    <p>Click <a href="./logout">here</a> to log out.</p>
-
-
-    {{#if successMessage}}
-        <p class="success-message">{{successMessage}}</p>
-    {{/if}}
-    {{#if errorMessage}}
-        <p class="error-message">{{errorMessage}}</p>
-    {{/if}}
-
-    <!-- Form for sending messages -->
-    {{!--     <form action="/send-message" method="post"> --}}
-    {{!--         <div class="flex-col mb"> --}}
-    {{!--             <label for="txtReceiverUsername">Receiver Username:</label> --}}
-    {{!--             <input type="text" name="receiverUsername" id="txtReceiverUsername" required> --}}
-    {{!--         </div> --}}
-
-    {{!--         <div class="flex-col mb"> --}}
-    {{!--             <label for="txtMessageContent">Message Content:</label> --}}
-    {{!--             <textarea name="content" id="txtMessageContent" required></textarea> --}}
-    {{!--         </div> --}}
-
-    {{!--         <div class="flex-row justify-sb align-center"> --}}
-    {{!--             <button type="submit">Send Message</button> --}}
-    {{!--         </div> --}}
-    {{!--     </form> --}}
-
-
-
-    {{#if messages}}
-        <ul>
-            {{#each messages}}
-                <li>
-                    <p>Timestamp: {{this.sent_at}}</p >
-                    <p>Sender: {{this.sender}}</p >
-                    <p>Content: {{this.content}}</p >
-                </li>
-            {{/each}}
-        </ul>
-    {{else}}
-        <p>No messages received.</p >
-    {{/if}}
-
     <div>
-        <h1>ARTICLES    <span class="labelButton" onclick="goNewArticle()">[PUBLISH A NEW ARTICLE]</span></h1>
-        {{#if articles}}
-            <ul>
+    <h1>ARTICLES    <span class="labelButton" onclick="goNewArticle()">[PUBLISH A NEW ARTICLE]</span></h1>
+    <div>
+    {{#if user}}
+    <span class="labelArticleSelect" onclick="searchMyArticles()">[MY ARTICLES]</span>
+    <span class="labelArticleSelect" onclick="searchAllArticles()">[ALL ARTICLES]</span>
+    {{/if}}
+    <div id="orderBy">
+      ORDER BY:
+      <input onclick="sort1()" type="radio" id="orderby1" name="orderby" value="Title">Title
+      <input onclick="sort2()" type="radio" id="orderby2" name="orderby" value="CreatedTime">CreatedTime
+      <input onclick="sort3()" type="radio" id="orderby3" name="orderby" value="UserName">UserName
+    </div>
+    </div>
+    {{#if articles}}
+            <ul id="articleList">
                 {{#each articles}}
                     <li>
-                        <p><span class = "articleTitle" onclick="goDetails({{this.Id}})">{{this.Title}}</span> <br/>{{this.CreatedTime}} -PUBLISHER: {{this.UserName}}  -HITS: {{this.Hits}} -COMMENTS: {{this.Comments}}</p >
+                        <p><span class ="articleTitle" onclick="goDetails({{this.Id}})">{{this.Title}}</span>
+                        {{#if this.isMine}}
+                        <a  class ="labelOperation" onclick="goEditArticle({{this.Id}})">[EDIT]</a>&nbsp;
+                        <a  class ="labelOperation" onclick="goDeleteArticle({{this.Id}})">[DELETE]</a>&nbsp;
+                        {{/if}}
+                        <br/>
+                        <span>{{this.CreatedTime}}</span>
+                         -PUBLISHER: <span>{{this.UserName}}</span>
+                         -HITS: {{this.Hits}} -COMMENTS: {{this.Comments}}
+                        </p >
                     </li>
                 {{/each}}
             </ul>
@@ -83,7 +65,7 @@
         {{/if}}
     </div>
     <div>
-        <span class="publishNew" onclick="goNewArticle()">[PUBLISH A NEW ARTICLE]</span>
+        <table id="table"></table>
     </div>
 
 
@@ -94,10 +76,81 @@
 </div>
 
 <script>
-    function goDetails(id){
-        this.location = "/articleDetails?id="+id;
-    }
-    function goNewArticle(){
-        this.location = "/newArticle";
-    }
+
+function searchMyArticles(){
+    console.log('查询我的文章');
+    this.location = "/myArticles";
+}
+
+function searchAllArticles(){
+    this.location = "/allArticles";
+}
+
+function goDeleteArticle(id){
+    this.location = "/articleDelete?id="+id;
+}
+function goEditArticle(id){
+    this.location = "/articleEdit?id="+id;
+}
+function goDetails(id){
+    this.location = "/articleDetails?id="+id;
+}
+function goNewArticle(){
+    this.location = "/newArticle";
+}
+function sort1(){
+  const ul = document.getElementById('articleList');
+  const lis = Array.from(ul.querySelectorAll('li'));
+  // 排序
+  lis.sort((a, b) => {
+    const titleA = a.querySelector('span:first-child').textContent;
+    const titleB = b.querySelector('span:first-child').textContent;//.innerHtml;//
+    //console.log(titleA);
+    //console.log(titleB);
+    return titleA.localeCompare(titleB);//titleA > titleB;
+  });
+  console.log(lis);
+  while (ul.firstChild) {
+      ul.removeChild(ul.firstChild);
+  }
+  lis.forEach(li => ul.appendChild(li));
+}
+
+
+function sort2(){
+  const ul = document.getElementById('articleList');
+  const lis = Array.from(ul.querySelectorAll('li'));
+  // 排序
+  lis.sort((a, b) => {
+    const timeA = a.querySelector('span:nth-of-type(2)').textContent;
+    const timeB = b.querySelector('span:nth-of-type(2)').textContent;
+    //console.log(timeA);
+    //console.log(timeB);
+    return timeA.localeCompare(timeB);//timeA > timeB;
+  });
+  console.log(lis);
+  while (ul.firstChild) {
+      ul.removeChild(ul.firstChild);
+  }
+  lis.forEach(li => ul.appendChild(li));
+}
+
+
+function sort3(){
+  const ul = document.getElementById('articleList');
+  const lis = Array.from(ul.querySelectorAll('li'));
+  // 排序
+  lis.sort((a, b) => {
+    const userA = a.querySelector('span:last-child').textContent;
+    const userB = b.querySelector('span:last-child').textContent;
+    //console.log(userA);
+    //console.log(userB);
+    return userA.localeCompare(userB);//userA > userB;
+  });
+  console.log(lis);
+  while (ul.firstChild) {
+      ul.removeChild(ul.firstChild);
+  }
+  lis.forEach(li => ul.appendChild(li));
+}
 </script>

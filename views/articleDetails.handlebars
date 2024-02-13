@@ -1,42 +1,70 @@
 
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 
-<div id="navibar">
-    <div id="left-box">
-        <!-- Content for left box -->
-        <ul class="nav navbar-nav">-->
-                                <li ><a href="/">Home <span class="sr-only">(current)</span></a></li>
-                                <li ><a href="/login">Login</a></li>
-                                <li ><a href="/new-account">new-account</a></li>
-                            </ul>
-    </div>
-    <div id="right-box">
-        <!-- Content for right box -->
-        <ul class="nav navbar-nav">-->
-
-                                <li ><a href="/account_management">Account-management</a></li>
-
-                            </ul>
-    </div>
-</div>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse"  role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> HOME</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+              {{#if user}}
+                    <li>&nbsp;&nbsp;
+                     {{#if user.avatar}}
+                     <img class="avatar" src="{{user.avatar}}" />
+                     {{else}}
+                     <span class="glyphicon glyphicon-user"></span>
+                     {{/if}}
+                     WELCOME {{user.name}}</li>
+                    <li><a href="/account_management"><span class="glyphicon glyphicon-log-in"></span> EDIT</a></li>
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> LOGOUT</a></li>
+              {{else}}
+                    <li><a href="/newAccount"><span class="glyphicon glyphicon-user"></span> REGISTER</a></li>
+                    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> LOGIN</a></li>
+              {{/if}}
+            </ul>
+        </div>
+    </nav>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
 
 
 <div class="container">
-<span class="labelButton" onclick="goback()">[<==BACK]</span>
+{{!-- <span class="labelButton" onclick="goback()">[<==BACK]</span> --}}
+<button type="button" class="btn btn-default btn-lg" onclick="goback()">
+  <span class="glyphicon glyphicon-arrow-left"></span> Back
+</button>
+
     <div>
 
     {{#if article}}
-         <h1>{{article.Title}} </h1>
-         <p>Timestamp: {{article.CreatedTime}} -PUBLISHER: {{article.UserName}}  -HITS: {{article.Hits}} -COMMENTS: {{article.Comments}}</p >
-         <p>Content: {{article.Content}}</p >
+         <h1>{{article.Title}}</h1>
+         <p>{{article.CreatedTime}} -PUBLISHER: {{article.UserName}}  -HITS: {{article.Hits}} -COMMENTS: {{article.Comments}}</p >
+         <div id="div1">
+             <iframe id="dizhi" srcdoc="{{article.Content}}" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>
+         </div >
 
-         <p>[COMMENTS]</p>
-         <div>
+         <p>
+         <span class="commentsToggle" id="togglename" onclick="toggleComments()">[HIDE COMMENTS]</span>
+         <span class="labelComment" onclick="openPopupNew({{article.Id}})">
+         {{#if user}}
+         [NEW COMMENT]</span>
+         <span class="labelLike" onclick="clickLike({{article.Id}})">[LIKE]</span>
+         {{/if}}
+         </p>
+         <div id="commentsDiv">
               {{#if comments}}
+                {{#if article.isMine}}<span class="labelDeleteComment" onclick="deleteAllComments({{this.ArticleId}})">[DELETE ALL COMMENTS]</span>{{/if}}
                    <ul>
                          {{#each comments}}
                               <li>
                                    {{this.Content}} -{{this.CreatedTime}} -{{this.UserName}}
+                                   <span class="labelComment" onclick="openPopup({{this.ArticleId}},{{this.Id}})">[reply]</span>
+                                   {{#if this.isMine}}<span class="labelDeleteComment" onclick="deleteComments_1({{this.Id}})">[DELETE]</span>{{/if}}
+                                   {{#if this.ReplyNum}}-<span class="labelOperation" onclick="getReplies(this,{{this.Id}})">{{this.ReplyNum}} replies</span>{{/if}}
+
                               </li>
                           {{/each}}
                    </ul>
@@ -50,15 +78,265 @@
     </div>
 
 
-
-
+<!-- 遮罩层 -->
+<div id="mask" style="display: none;"></div>
+<!-- 弹出div -->
+<div id="popup" style="display: none;">
+  <p>添加评论</p>
+    <form id="formComment">
+        <input type="hidden" id="textArticleId" name="articleId">
+        <input type="hidden" id="textCommentId" name="commentId">
+        <div class="flex-col mb">
+            <label>Content:</label>
+            <textarea id="textContent" name="content"></textarea>
+        </div>
+        <div class="flex-row justify-sb align-center">
+            <button type="submit">ADD</button>
+        </div>
+    </form>
+    <div><button onclick="closePopup()">关闭</button></div>
+</div>
 
 
 </div>
 
+
 <script>
+function clickLike(articleId){
+    let data = {"articleId": articleId};
+    $.get('/clickLike', data, function(res){
+                    if(res == "SUCCESS"){
+                        alert("SUCCESS");
+                        //location.reload();
+                    }else{
+                        alert("FAILED. PLEASE TRY AGAIN LATER.");
+                        return;
+                    }
+                });
+}
+function deleteComments_3(parentId,commentId){
+    let data = {"parentId": parentId,"commentId": commentId};
+    $.get('/deleteComments_3', data, function(res){
+                    if(res == "SUCCESS"){
+                        alert("SUCCESS");
+                        location.reload();
+                    }else{
+                        alert("FAILED. PLEASE TRY AGAIN LATER.");
+                        return;
+                    }
+                });
+}
+function deleteComments_2(parentId,commentId){
+    let data = {"parentId": parentId,"commentId": commentId};
+    $.get('/deleteComments_2', data, function(res){
+                    if(res == "SUCCESS"){
+                        alert("SUCCESS");
+                        location.reload();
+                    }else{
+                        alert("FAILED. PLEASE TRY AGAIN LATER.");
+                        return;
+                    }
+                });
+}
+function deleteComments_1(commentId){
+    let data = {"commentId": commentId};
+    $.get('/deleteComments_1', data, function(res){
+                    if(res == "SUCCESS"){
+                        alert("SUCCESS");
+                        location.reload();
+                    }else{
+                        alert("FAILED. PLEASE TRY AGAIN LATER.");
+                        return;
+                    }
+                });
+}
+function deleteAllComments(articleId){
+    let data = {"articleId": articleId};
+    $.get('/deleteAllComments', data, function(res){
+                    if(res == "SUCCESS"){
+                        alert("SUCCESS");
+                        location.reload();
+                    }else{
+                        alert("FAILED. PLEASE TRY AGAIN LATER.");
+                        return;
+                    }
+                });
+}
+function toggleComments(){
+    var element = document.getElementById('commentsDiv');
+    var name = document.getElementById('togglename');
+    if(element.style.display == 'block'){
+        element.style.display = 'none';
+        name.innerHTML = '[SHOW COMMENTS]';
+    }else{
+        element.style.display = 'block';
+        name.innerHTML = '[HIDE COMMENTS]';
+    }
+}
+
+function insertAfter(newnode,child){
+    //获取目标节点的父节点
+	var parent = child.parentNode;
+	if(parent.lastChild == child){
+	    parent.appendChid(newnode);
+	}else{
+	    parent.insertBefore(newnode,child.nextSibling);
+	//nextSibling：下一个兄弟元素节点
+	}
+}
+function getReplies(obj,parentId){
+    fetch('/getReplies?parentId='+parentId)
+          .then(response => response.json())
+          .then(comments => {
+            comments.forEach(comment => {
+              const commentEl = document.createElement('div');
+              if(comment.isMine){
+                  if(comment.ReplyNum==0){
+                                commentEl.innerHTML = `
+                                <ul class="subComments"><li>
+                                ${comment.Content}  -${comment.CreatedTime} -${comment.UserName}<span class="labelComment" onclick="openPopup(${comment.ArticleId},${comment.Id})">[reply]</span>
+                                <span class="labelDeleteComment" onclick="deleteComments_2(${comment.ParentId},${comment.Id})">[DELETE]</span>
+                                `;
+                            }else{
+                                commentEl.innerHTML = `
+                                <ul class="subComments"><li>
+                                ${comment.Content}  -${comment.CreatedTime} -${comment.UserName}<span class="labelComment" onclick="openPopup(${comment.ArticleId},${comment.Id})">[reply]</span>
+                                <span class="labelDeleteComment" onclick="deleteComments_2(${comment.ParentId},${comment.Id})">[DELETE]</span>
+                                -<span class="labelOperation" onclick="getReplies2(this,${comment.Id})">${comment.ReplyNum} replies</span>
+                                `;
+                            }
+              }else{
+                  if(comment.ReplyNum==0){
+                                commentEl.innerHTML = `
+                                <ul class="subComments"><li>
+                                ${comment.Content}  -${comment.CreatedTime} -${comment.UserName}<span class="labelComment" onclick="openPopup(${comment.ArticleId},${comment.Id})">[reply]</span>
+                                `;
+                            }else{
+                                commentEl.innerHTML = `
+                                <ul class="subComments"><li>
+                                ${comment.Content}  -${comment.CreatedTime} -${comment.UserName}<span class="labelComment" onclick="openPopup(${comment.ArticleId},${comment.Id})">[reply]</span>
+                                -<span class="labelOperation" onclick="getReplies2(this,${comment.Id})">${comment.ReplyNum} replies</span>
+                                `;
+                            }
+              }
+
+              commentEl.innerHTML += `</li></ul>`;
+              insertAfter(commentEl,obj);
+            });
+          });
+}
+function getReplies2(obj,parentId){
+    fetch('/getReplies?parentId='+parentId)
+          .then(response => response.json())
+          .then(comments => {
+            comments.forEach(comment => {
+              const commentEl = document.createElement('div');
+              if(comment.isMine){
+                  commentEl.innerHTML = `
+                                  <ul class="subComments">
+                                    <li>
+                                      ${comment.Content}  -${comment.CreatedTime} -${comment.UserName}
+                                      <span class="labelDeleteComment" onclick="deleteComments_3(${comment.ParentId},${comment.Id})">[DELETE]</span>
+                                    </li>
+                                  </ul>
+                                `;
+              }else{
+                  commentEl.innerHTML = `
+                                  <ul class="subComments">
+                                    <li>
+                                      ${comment.Content}  -${comment.CreatedTime} -${comment.UserName}
+                                    </li>
+                                  </ul>
+                                `;
+              }
+              insertAfter(commentEl,obj);
+            });
+          });
+}
 function goback(){
     //history.go(-1);
     this.location = "/";
 }
+
+function setIframeHeight(iframe) {
+ if (iframe) {
+   var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+   if (iframeWin.document.body) {
+     iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+   }
+ }
+}
+
+window.onload = function () {
+ setIframeHeight(document.getElementById('dizhi'));
+};
+function openPopupNew(articleId) {
+  document.getElementById('mask').style.display = 'block';
+  document.getElementById('popup').style.display = 'block';
+  document.getElementById('textArticleId').value = articleId;
+}
+function openPopup(articleId,commentId) {
+  document.getElementById('mask').style.display = 'block';
+  document.getElementById('popup').style.display = 'block';
+  document.getElementById('textArticleId').value = articleId;
+  document.getElementById('textCommentId').value = commentId;
+}
+
+function closePopup() {
+  document.getElementById('mask').style.display = 'none';
+  document.getElementById('popup').style.display = 'none';
+  //document.getElementById('textArticleId').value = "";
+  //document.getElementById('textCommentId').value = "";
+  //$('#formComment')[0].reset();
+}
+
+function addComment(){
+            let data = $('#formComment').serialize();
+            //console.log(data);
+            $.post('/addComment', data, function(res){
+                if(res == "SUCCESS"){
+                    alert("SUCCESS");
+                    closePopup();
+                    location.reload();
+                }else{
+                    alert("FAILED. PLEASE TRY AGAIN LATER.");
+                    return;
+                }
+                //固定写法 将jq转换成原始dom元素 重置表单
+                //$('#formComment')[0].reset()
+            });
+}
+
+const form = document.getElementById('formComment');
+// 监听表单提交事件
+form.addEventListener('submit', function(event) {
+    event.preventDefault(); // 阻止表单默认提交行为
+    // 收集表单数据
+    let form = document.getElementById('formComment');
+    //const formData = new FormData(form);
+    let formData = $('#formComment').serialize();
+    //alert(formData);
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formData
+    };
+    // 发送POST请求
+    fetch('/addComment', requestOptions)
+    .then(res => {
+          console.log(res);
+          if(res.ok){
+               alert("SUCCESS");
+               closePopup();
+               location.reload();
+               //this.location = "/articleDetails?id="+document.getElementById('textArticleId').value;
+          }else{
+               alert("FAILED. PLEASE TRY AGAIN LATER.");
+               return;
+          }
+    })
+    .catch(error => console.error('Error:', error)); // 处理错误
+});
 </script>

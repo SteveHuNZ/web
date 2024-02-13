@@ -7,7 +7,7 @@ async function userExistsWithUsername(username) {
     const db = await database;
 
     const user = await db.query(
-        "select username from web_users where username = ?",
+        "select username from lab_15_users where username = ?",
         [username]);
 
     return user.length > 0;
@@ -25,8 +25,8 @@ async function createUser(user) {
     const db = await database;
 
     const result = await db.query(
-        "insert into web_users (username, password, name,description,birthday) values (?, ?,?, ?,  ?)",
-        [user.username, user.password, user.name,user.description, user.birthday]);
+        "insert into lab_15_users (username, password, name,description,birthday,avatar) values (?, ?, ?, ?, ?, ?)",
+        [user.username, user.password, user.name,user.description, user.birthday, user.avatar]);
 
     // Get the auto-generated ID value, and assign it back to the user object.
     user.id = result.insertId;
@@ -44,7 +44,7 @@ async function retrieveUserById(id) {
     const db = await database;
 
     const user = await db.query(
-        "select * from web_users where id = ?",
+        "select * from lab_15_users where id = ?",
         [id]);
 
     return await user[0];
@@ -61,7 +61,7 @@ async function retrieveUserWithCredentials(username, password) {
     const db = await database;
 
     const user = await db.query(
-        "select * from web_users where username = ?",
+        "select * from lab_15_users where username = ?",
         [username]);
 
     if (user.length === 0) {
@@ -83,7 +83,7 @@ async function retrieveUserWithCredentials(username, password) {
 async function retrieveAllUsers() {
     const db = await database;
 
-    return db.query("select * from web_users");
+    return db.query("select * from lab_15_users");
 }
 
 /**
@@ -95,8 +95,8 @@ async function updateUser(user) {
     const db = await database;
 
     await db.query(
-        "update web_users set username = ?, password = ?, name = ? where id = ?",
-        [user.username, user.password, user.name, user.id]);
+        "update lab_15_users set username = ?, password = ?, name = ?,description = ?, birthday = ?, avatar = ? where id = ?",
+        [user.username, user.password, user.name,user.description, user.birthday, user.avatar, user.id]);
 }
 
 /**
@@ -107,14 +107,14 @@ async function updateUser(user) {
 async function deleteUser(id) {
     const db = await database;
 
-    await db.query("delete from web_users where id = ?", [id]);
+    await db.query("delete from lab_15_users where id = ?", [id]);
 }
 
 async function updateUserName(user, name) {
     const db = await database;
 
     try {
-        let result = await db.query("update web_users set username = ? where id = ?", [name, user.id]);
+        let result = await db.query("update lab_15_users set username = ? where id = ?", [name, user.id]);
 
         return result.rowsAffected !== 0;
     } catch (e) {

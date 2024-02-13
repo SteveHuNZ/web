@@ -1,9 +1,10 @@
 
+require("dotenv").config();
 
 // Setup Express
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.EXPRESS_PORT || 3000;
 
 //////////////////////////////////////
 const multer = require('multer');
@@ -70,5 +71,5 @@ app.use(appRouter);
 // log a simple message to the server console. Any console.log() statements in your node.js code
 // can be seen in the terminal window used to run the server.
 app.listen(port, function () {
-    console.log(`App listening on port ${port}!`);
+    console.log(`App listening on port http://localhost:${port}/ !`);
 });

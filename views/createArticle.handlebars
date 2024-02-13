@@ -1,28 +1,37 @@
 
 
-<div id="navibar">
-    <div id="left-box">
-        <!-- Content for left box -->
-        <ul class="nav navbar-nav">-->
-            <li ><a href="/">Home <span class="sr-only">(current)</span></a></li>
-            <li ><a href="/login">Login</a></li>
-            <li ><a href="/new-account">new-account</a></li>
-        </ul>
-    </div>
-    <div id="right-box">
-        <!-- Content for right box -->
-        <ul class="nav navbar-nav">-->
-
-            <li ><a href="/account_management">Account-management</a></li>
-
-        </ul>
-    </div>
-</div>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse"  role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> HOME</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+              {{#if user}}
+                    <li>&nbsp;&nbsp;
+                     {{#if user.avatar}}
+                     <img class="avatar" src="{{user.avatar}}" />
+                     {{else}}
+                     <span class="glyphicon glyphicon-user"></span>
+                     {{/if}}
+                     WELCOME {{user.name}}</li>
+                    <li><a href="/account_management"><span class="glyphicon glyphicon-log-in"></span> EDIT</a></li>
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> LOGOUT</a></li>
+              {{else}}
+                    <li><a href="/newAccount"><span class="glyphicon glyphicon-user"></span> REGISTER</a></li>
+                    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> LOGIN</a></li>
+              {{/if}}
+            </ul>
+        </div>
+    </nav>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
 
 
 <div class="container">
-    <h1>New Article</h1>
+<h1>New Article</h1>
     <form action="/createArticle" method="POST">
         <div class="flex-col mb">
             <label for="txtTitle">Title:</label>
@@ -30,9 +39,7 @@
         </div>
         <div class="flex-col mb">
             <label>Content:</label>
-            <div id="editor">
-                <p>Editor content goes here.</p>
-            </div>
+            <textarea name="content" id="editor"></textarea>
         </div>
         <div class="flex-row justify-sb align-center">
             <button type="submit">Create article</button>
@@ -47,41 +54,29 @@
 <script src="build/ckeditor.js"></script>
 <script>
 
-    ClassicEditor
-            .create( document.querySelector( '#editor' ), {
-                //plugins: [ Essentials, Paragraph, Bold, Italic ],
-                toolbar: [ 'heading', '|', 'bold', 'italic', 'imageUpload' ],
-                image: {
-                    // 配置上传适配器
-                    upload: {
-                        //destination: 'your-cloudinary-folder', // 可选，用于指定Cloudinary中的文件夹
-                        adapter(file) {
-                            const data = new FormData();
-                            data.append('upload', file);
-
-                            return fetch('/upload', { // 上传图片的API端点
-                                method: 'POST',
-                                body: data
-                            })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.public_id && data.url) {
-                                            return {
-                                                default: data.url
-                                            };
-                                        }
-
-                                        throw new Error('上传失败');
-                                    });
-                        }
-                    }
-                }
-
-            } )
-            .then( editor => {
-                console.log( 'Editor was initialized', editor );
-            } )
-            .catch( error => {
-                console.error( error.stack );
-            } );
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        //plugins: [ Essentials, Paragraph, Bold, Italic ],
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'imageUpload' ],
+        ckfinder: {
+                    uploadUrl: '/upload' // 图片上传的服务器端路径
+                },
+    } )
+//     .then(editor => {
+//         window.editor = editor;
+//         data = editor.getData();
+//         console.log(data);
+//         } )
+//     .catch(error => {
+//             console.log(error);
+//         } );
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
+    //当用户在CKEditor中点击上传图片时，图片会被发送到/upload端点，
+    //然后保存到服务器的uploads目录下。服务器端的端点再返回图片的URL，CKEditor会将其插入到编辑器中。
 </script>
+
