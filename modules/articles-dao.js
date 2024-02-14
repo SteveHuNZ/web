@@ -54,6 +54,7 @@ const articlesDao = {
         await db.query('DELETE FROM lab_15_comments WHERE ArticleId = ?', [articleId]);
         await db.query('DELETE FROM lab_15_articles WHERE Id = ?', [articleId]);
         return true;
+    },
 
     async getUserIdByUsername(username) {
         const db = await database;
